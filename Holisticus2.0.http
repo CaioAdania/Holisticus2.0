@@ -1,0 +1,6 @@
+@Holisticus2._0_HostAddress = http://localhost:5240
+
+GET {{Holisticus2._0_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
