@@ -8,5 +8,6 @@ namespace Holisticus2._0.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Medicament> Medicament { get; set; }
+        public DbSet<Users> Users { get; set; }
     }
 }
