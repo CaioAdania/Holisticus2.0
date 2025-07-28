@@ -26,9 +26,34 @@ namespace Holisticus2._0.Controllers
         }
 
         [HttpPost]
+        [Route("LoginUser")]
+        public ActionResult LoginUser(string email, string password)
+        {
+            var loginUser = _context.Users.Where(u => u.Email == email).FirstOrDefault();
+
+            if (loginUser == null)
+            {
+                return Unauthorized("Usuario não encontrado.");
+            }
+
+            bool passwordLogin = BCrypt.Net.BCrypt.Verify(password, loginUser.Password);
+
+            if (!passwordLogin)
+            {
+                return Unauthorized("Senha errada.");
+            }
+            
+            return Ok(loginUser);
+        }
+
+        [HttpPost]
         [Route("AddUsers")]
         public ActionResult<Users> AddUser(Users user)
         {
+            var password = user.Password;
+            var ecryptPassword = BCrypt.Net.BCrypt.HashPassword(password);
+            user.Password = ecryptPassword;
+
             _context.Users.Add(user);
             _context.SaveChanges();
 
