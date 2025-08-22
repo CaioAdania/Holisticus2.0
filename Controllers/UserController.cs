@@ -1,8 +1,9 @@
-﻿using Holisticus2._0.Data;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Holisticus2._0.Models;
 using Microsoft.EntityFrameworkCore;
+using Holisticus2._0.Entities.Models;
+using Holisticus2._0.Infrastructure.Data;
+using Holisticus2._0.Application.Interfaces;
 
 namespace Holisticus2._0.Controllers
 {
@@ -10,16 +11,16 @@ namespace Holisticus2._0.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IUserService _userService;
 
-        public UserController(AppDbContext context)
+        public UserController(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
         [HttpGet]
         [Route("GetUsers")]
-        public ActionResult<List<Users>> GetUser()
+        public async Task<ActionResult<List<UserController>>> GetAllUsers()
         {
             var user = _context.Users.ToList();
             return Ok(user);
@@ -27,7 +28,7 @@ namespace Holisticus2._0.Controllers
 
         [HttpPost]
         [Route("LoginUser")]
-        public ActionResult LoginUser(string email, string password)
+        public async Task <ActionResult<UserController>> LoginUser(string email, string password)
         {
             var loginUser = _context.Users.Where(u => u.Email == email).FirstOrDefault();
 
@@ -48,7 +49,7 @@ namespace Holisticus2._0.Controllers
 
         [HttpPost]
         [Route("AddUsers")]
-        public ActionResult<Users> AddUser(Users user)
+        public async Task<ActionResult<UserController>> AddUser(UserController user)
         {
             var password = user.Password;
             var ecryptPassword = BCrypt.Net.BCrypt.HashPassword(password);
@@ -62,7 +63,7 @@ namespace Holisticus2._0.Controllers
 
         [HttpDelete]
         [Route("DeleteUser")]
-        public ActionResult DeleteUser(int id)
+        public async Task<ActionResult<UserController>> DeleteUser(int id)
         {
             var delete = _context.Users.Where(u => u.Id == id).FirstOrDefault();
 
@@ -81,7 +82,7 @@ namespace Holisticus2._0.Controllers
 
         [HttpPost]
         [Route("UpdateUserName")]
-        public ActionResult UpdateNameUser(int id, string name)
+        public async Task<ActionResult<UserController>> UpdateNameUser(int id, string userName)
         {
             var update = _context.Users.Where(u => u.Id == id).FirstOrDefault();
 

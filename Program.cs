@@ -1,4 +1,6 @@
-using Holisticus2._0.Data;
+using Holisticus2._0.Application.Interfaces;
+using Holisticus2._0.Application.Services;
+using Holisticus2._0.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("AppDbConnectionString"));
 });
+
+builder.Services.AddScoped<IMedicamentService, MedicamentService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

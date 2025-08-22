@@ -1,4 +1,4 @@
-﻿namespace Holisticus2._0.Models
+﻿namespace Holisticus2._0.Entities.Models
 {
     public class Medicament
     {

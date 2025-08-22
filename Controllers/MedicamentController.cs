@@ -1,5 +1,6 @@
-﻿using Holisticus2._0.Data;
-using Holisticus2._0.Models;
+﻿using Holisticus2._0.Application.Interfaces;
+using Holisticus2._0.Entities.Models;
+using Holisticus2._0.Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,18 +12,18 @@ namespace Holisticus2._0.Controllers
     [ApiController]
     public class MedicamentController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IMedicamentService _medicamentService;
 
-        public MedicamentController(AppDbContext context)
+        public MedicamentController(IMedicamentService medicamentService)
         {
-            _context = context;
+            _medicamentService = medicamentService;
         }
 
         [HttpGet]
         [Route("SearchMedicaments")]
         public ActionResult<List<Medicament>> GetMedicament()
         {
-            var Medications = _context.Medicament.ToList();
+            var medications = _context.Medicament.ToList();
             return Ok(Medications);
         }
 
