@@ -1,7 +1,10 @@
 ﻿using Holisticus2._0.Application.Interfaces;
 using Holisticus2._0.Controllers;
+using Holisticus2._0.Entities.Models;
 using Holisticus2._0.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Holisticus2._0.Application.Services
 {
@@ -13,26 +16,26 @@ namespace Holisticus2._0.Application.Services
         {
             _context = context;
         }
-        public Task<ActionResult<List<UserController>>> GetAllUsersAsync()
+        public async Task<ActionResult<List<UsersModel>>> GetAllUsersAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Users.ToListAsync();
         }
-        public Task<ActionResult<UserController>> LoginUserAsync(string email, string password)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ActionResult<UserController>> AddUserAsync(UserController user)
+        public async Task<ActionResult<UsersModel>> LoginUserAsync(string email, string password)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ActionResult<UserController>> DeleteUserAync(int id)
+        public async Task<ActionResult<UsersModel>> AddUserAsync(UsersModel user)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ActionResult<UserController>> EditUserNameAsync(int id, string userName)
+        public async Task<ActionResult<UsersModel>> DeleteUserAync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ActionResult<UsersModel>> EditUserEmailAsync(int id, string userEmail)
         {
             throw new NotImplementedException();
         }

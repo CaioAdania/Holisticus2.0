@@ -1,7 +1,9 @@
 ﻿using Holisticus2._0.Application.Interfaces;
 using Holisticus2._0.Controllers;
+using Holisticus2._0.Entities.Models;
 using Holisticus2._0.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Holisticus2._0.Application.Services
 {
@@ -13,24 +15,22 @@ namespace Holisticus2._0.Application.Services
         {
             _context = context;
         }
-        public async Task<ActionResult<List<MedicamentController>>> GetAllMedicamentAsync()
+        public async Task<ActionResult<List<MedicamentModel>>> GetAllMedicamentAsync()
         {
-            var medications = _context.Medicament.ToList();
-
-            throw new NotImplementedException();
+            return await _context.Medicament.ToListAsync();
         }
 
-        public Task<ActionResult<MedicamentController>> AddMedicamentAsync(MedicamentController medicament)
+        public Task<ActionResult<MedicamentModel>> AddMedicamentAsync(MedicamentModel medicament)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ActionResult<MedicamentController>> DeleteMedicamentAsync(int id)
+        public Task<ActionResult<MedicamentModel>> DeleteMedicamentAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<ActionResult<MedicamentController>> EditMedicamentAsync(int id, string name)
+        public Task<ActionResult<MedicamentModel>> EditMedicamentAsync(int id, string name)
         {
             throw new NotImplementedException();
         }

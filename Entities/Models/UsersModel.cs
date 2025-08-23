@@ -1,6 +1,6 @@
 ﻿namespace Holisticus2._0.Entities.Models
 {
-    public class Users
+    public class UsersModel
     {
         public int Id { get; set; }
         public string? Name { get; set; }

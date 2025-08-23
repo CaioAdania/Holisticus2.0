@@ -19,72 +19,76 @@ namespace Holisticus2._0.Controllers
             _medicamentService = medicamentService;
         }
 
+        /// <summary>
+        /// Busca os medicamentos.
+        /// </summary>
+        /// <returns>Retorna os medicamentos.</returns>
         [HttpGet]
-        [Route("SearchMedicaments")]
-        public ActionResult<List<Medicament>> GetMedicament()
+        [Route("GetMedicaments")]
+        public async Task<ActionResult<List<MedicamentModel>>> GetMedicament()
         {
-            var medications = _context.Medicament.ToList();
-            return Ok(Medications);
+            var medications = await _medicamentService.GetAllMedicamentAsync();
+            return Ok(medications);
         }
 
-        [HttpPost]
-        [Route("AddMedicament")]
-        public ActionResult<Medicament> AddMedicament(Medicament medicament)
-        {
-            _context.Medicament.Add(medicament);
-            _context.SaveChangesAsync();
+        //[HttpPost]
+        //[Route("AddMedicament")]
+        //public async Task<ActionResult<MedicamentModel>> AddMedicament(MedicamentModel medicament)
+        //{
+        //    _context.Medicament.Add(medicament);
+        //    _context.SaveChangesAsync();
 
-            return Ok(medicament);
-        }
+        //    return Ok(medicament);
+        //}
 
-        [HttpDelete]
-        [Route("DeleteMedicamet")]
-        public ActionResult<Medicament> DeleteMedicament(int id)
-        {
-            var delete = _context.Medicament.Where(m => m.Id == id).FirstOrDefault();
+        //[HttpDelete]
+        //[Route("DeleteMedicamet")]
+        //public async Task<ActionResult<MedicamentModel>> DeleteMedicament(int id)
+        //{
+        //    var delete = _context.Medicament.Where(m => m.Id == id).FirstOrDefault();
             
-            if(delete != null)
-            {
-                if(delete.StateCode == 1 && delete.IsDeleted == 0)
-                {
-                    delete.StateCode = 0;
-                    delete.IsDeleted = 1;
-                    delete.DeletedBy = "Admin";
+        //    if(delete != null)
+        //    {
+        //        if(delete.StateCode == 1 && delete.IsDeleted == 0)
+        //        {
+        //            delete.StateCode = 0;
+        //            delete.IsDeleted = 1;
+        //            delete.DeletedBy = "Admin";
 
-                    _context.SaveChangesAsync();
-                }
-                else
-                {
-                    _context.Medicament.Remove(delete);
-                    _context.SaveChangesAsync();
-                }
-            }
-            else
-            {
-                return BadRequest("Medicamento não encontrado.");
-            }
+        //            _context.SaveChangesAsync();
+        //        }
+        //        else
+        //        {
+        //            _context.Medicament.Remove(delete);
+        //            _context.SaveChangesAsync();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return BadRequest("Medicamento não encontrado.");
+        //    }
 
 
-            return Ok(delete);
-        }
+        //    return Ok(delete);
+        //}
 
-        [HttpPost]
-        [Route("UpdateNameMedicamet")]
-        public ActionResult<Medicament> UpdateMedicament(int id, string name)
-        {
-            var update = _context.Medicament.Where(m => m.Id == id).FirstOrDefault();
+        //[HttpPost]
+        //[Route("UpdateNameMedicamet")]
+        //public async Task<ActionResult<MedicamentModel>> UpdateMedicament(int id, string name)
+        //{
+        //    var update = _context.Medicament.Where(m => m.Id == id).FirstOrDefault();
 
-            if (update != null)
-            {
-                update.Name = name;
-                _context.SaveChangesAsync();
-            }
-            else
-            {
-                return BadRequest("Não foi possivel atualizar o nome.");
-            }
+        //    if (update != null)
+        //    {
+        //        update.Name = name;
+        //        _context.SaveChangesAsync();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest("Não foi possivel atualizar o nome.");
+        //    }
 
-            return Ok(update);
-        }
+        //    return Ok(update);
+        //}
     }
 }

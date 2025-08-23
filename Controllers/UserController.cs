@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Holisticus2._0.Entities.Models;
 using Holisticus2._0.Infrastructure.Data;
 using Holisticus2._0.Application.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace Holisticus2._0.Controllers
 {
@@ -18,86 +19,90 @@ namespace Holisticus2._0.Controllers
             _userService = userService;
         }
 
+        /// <summary>
+        /// Busca os usuarios.
+        /// </summary>
+        /// <returns>Retorna os usuarios.</returns>
         [HttpGet]
         [Route("GetUsers")]
-        public async Task<ActionResult<List<UserController>>> GetAllUsers()
+        public async Task<ActionResult<List<UsersModel>>> GetAllUsers()
         {
-            var user = _context.Users.ToList();
-            return Ok(user);
+            var getUser = await _userService.GetAllUsersAsync();
+            return Ok(getUser);
         }
 
-        [HttpPost]
-        [Route("LoginUser")]
-        public async Task <ActionResult<UserController>> LoginUser(string email, string password)
-        {
-            var loginUser = _context.Users.Where(u => u.Email == email).FirstOrDefault();
+        //[HttpPost]
+        //[Route("{email}/{password}/LoginUser")]
+        //public async Task <ActionResult<UsersModel>> LoginUser(string email, string password)
+        //{
+        //    var loginUser = _context.Users.Where(u => u.Email == email).FirstOrDefault();
 
-            if (loginUser == null)
-            {
-                return Unauthorized("Usuario não encontrado.");
-            }
+        //    if (loginUser == null)
+        //    {
+        //        return Unauthorized("Usuario não encontrado.");
+        //    }
 
-            bool passwordLogin = BCrypt.Net.BCrypt.Verify(password, loginUser.Password);
+        //    bool passwordLogin = BCrypt.Net.BCrypt.Verify(password, loginUser.Password);
 
-            if (!passwordLogin)
-            {
-                return Unauthorized("Senha errada.");
-            }
+        //    if (!passwordLogin)
+        //    {
+        //        return Unauthorized("Senha errada.");
+        //    }
             
-            return Ok(loginUser);
-        }
+        //    return Ok(loginUser);
+        //}
 
-        [HttpPost]
-        [Route("AddUsers")]
-        public async Task<ActionResult<UserController>> AddUser(UserController user)
-        {
-            var password = user.Password;
-            var ecryptPassword = BCrypt.Net.BCrypt.HashPassword(password);
-            user.Password = ecryptPassword;
+        //[HttpPost]
+        //[Route("AddUsers")]
+        //public async Task<ActionResult<UsersModel>> AddUser(UserController user)
+        //{
+        //    var password = user.Password;
+        //    var ecryptPassword = BCrypt.Net.BCrypt.HashPassword(password);
+        //    user.Password = ecryptPassword;
 
-            _context.Users.Add(user);
-            _context.SaveChanges();
+        //    _context.Users.Add(user);
+        //    _context.SaveChanges();
 
-            return Ok(user);
-        }
+        //    return Ok(user);
+        //}
 
-        [HttpDelete]
-        [Route("DeleteUser")]
-        public async Task<ActionResult<UserController>> DeleteUser(int id)
-        {
-            var delete = _context.Users.Where(u => u.Id == id).FirstOrDefault();
+        //[HttpDelete]
+        //[Route("{id}/DeleteUser")]
+        //public async Task<ActionResult<UsersModel>> DeleteUser(int id)
+        //{
+        //    var delete = _context.Users.Where(u => u.Id == id).FirstOrDefault();
 
-            if(delete != null)
-            {
-                _context.Remove(delete);
-                _context.SaveChanges();
-            }
-            else
-            {
-                return BadRequest("Não foi localizado o usuario.");
-            }
+        //    if(delete != null)
+        //    {
+        //        _context.Remove(delete);
+        //        _context.SaveChanges();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest("Não foi localizado o usuario.");
+        //    }
 
-            return Ok(delete);
-        }
+        //    return Ok(delete);
+        //}
 
-        [HttpPost]
-        [Route("UpdateUserName")]
-        public async Task<ActionResult<UserController>> UpdateNameUser(int id, string userName)
-        {
-            var update = _context.Users.Where(u => u.Id == id).FirstOrDefault();
+        //[HttpPost]
+        //[Route("{id}/{newEmail}/UpdateUserEmail")]
+        //public async Task<ActionResult<UsersModel>> UpdateUserEmail(int id, string newEmail)
+        //{
+        //    var update = _context.Users.Where(u => u.Id == id).FirstOrDefault();
 
-            if(update != null)
-            {
-                update.Name = name;
-                _context.SaveChanges();
-            }
-            else
-            {
-                return BadRequest("Usuario não encontrado");
-            }
+        //    if(update != null)
+        //    {
+        //        update.Name = name;
+        //        _context.SaveChanges();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest("Usuario não encontrado");
+        //    }
 
-            return Ok(update);
-        }
+        //    return Ok(update);
+        //}
 
     }
 }
