@@ -31,26 +31,20 @@ namespace Holisticus2._0.Controllers
             return Ok(getUser);
         }
 
-        //[HttpPost]
-        //[Route("{email}/{password}/LoginUser")]
-        //public async Task <ActionResult<UsersModel>> LoginUser(string email, string password)
-        //{
-        //    var loginUser = _context.Users.Where(u => u.Email == email).FirstOrDefault();
+        [HttpPost]
+        [Route("{email}/{password}/LoginUser")]
+        public async Task<ActionResult<UsersModel>> LoginUser(string email, string password)
+        {
+            try
+            {
+                var login = _userService.LoginUserAsync(email, password);
 
-        //    if (loginUser == null)
-        //    {
-        //        return Unauthorized("Usuario não encontrado.");
-        //    }
-
-        //    bool passwordLogin = BCrypt.Net.BCrypt.Verify(password, loginUser.Password);
-
-        //    if (!passwordLogin)
-        //    {
-        //        return Unauthorized("Senha errada.");
-        //    }
-            
-        //    return Ok(loginUser);
-        //}
+            }
+            catch
+            {
+                return BadRequest("Erro no serviço.");
+            }
+        }
 
         //[HttpPost]
         //[Route("AddUsers")]
