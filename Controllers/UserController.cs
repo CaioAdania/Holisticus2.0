@@ -5,6 +5,7 @@ using Holisticus2._0.Entities.Models;
 using Holisticus2._0.Infrastructure.Data;
 using Holisticus2._0.Application.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Holisticus2._0.Entities.Response;
 
 namespace Holisticus2._0.Controllers
 {
@@ -37,7 +38,18 @@ namespace Holisticus2._0.Controllers
         {
             try
             {
-                var login = _userService.LoginUserAsync(email, password);
+                var login = await _userService.LoginUserAsync(email, password);
+
+                if(login.Success == true)
+                {
+                    return Ok(login.Data);
+                }
+
+                return BadRequest(new
+                {
+                    Message = login.ErrorMessage,
+                    ErrorType = login.ErrorType
+                });
 
             }
             catch
@@ -46,42 +58,60 @@ namespace Holisticus2._0.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("AddUsers")]
+        public async Task<ActionResult<UsersModel>> AddUser(UsersModel user)
+        {
+            try
+            {
+                var addUser = await _userService.AddUserAsync(user);
+
+                if (addUser.Success == true)
+                {
+                    return Ok(addUser.Data);
+                }
+
+                return BadRequest(new
+                {
+                    Message = addUser.ErrorMessage,
+                    ErrorType = addUser.ErrorType
+                });
+            }
+            catch
+            {
+                return BadRequest("Erro no serviço.");
+            }
+            
+        }
+
+        [HttpDelete]
+        [Route("{id}/DeleteUser")]
+        public async Task<ActionResult<UsersModel>> DeleteUser(int id)
+        {
+            try
+            {
+                var idUser = await _userService.DeleteUserAync(id);
+
+                if (idUser.Success == true)
+                {
+                    return Ok($"O usuário de Id:{id}, foi deletado.");
+                }
+
+                return BadRequest(new
+                {
+                    Message = idUser.ErrorMessage,
+                    ErrorType = idUser.ErrorType
+                });
+            }
+            catch
+            {
+                return BadRequest("Erro no serviço.");
+            }
+        }
+
         //[HttpPost]
-        //[Route("AddUsers")]
-        //public async Task<ActionResult<UsersModel>> AddUser(UserController user)
-        //{
-        //    var password = user.Password;
-        //    var ecryptPassword = BCrypt.Net.BCrypt.HashPassword(password);
-        //    user.Password = ecryptPassword;
-
-        //    _context.Users.Add(user);
-        //    _context.SaveChanges();
-
-        //    return Ok(user);
-        //}
-
-        //[HttpDelete]
-        //[Route("{id}/DeleteUser")]
-        //public async Task<ActionResult<UsersModel>> DeleteUser(int id)
-        //{
-        //    var delete = _context.Users.Where(u => u.Id == id).FirstOrDefault();
-
-        //    if(delete != null)
-        //    {
-        //        _context.Remove(delete);
-        //        _context.SaveChanges();
-        //    }
-        //    else
-        //    {
-        //        return BadRequest("Não foi localizado o usuario.");
-        //    }
-
-        //    return Ok(delete);
-        //}
-
-        //[HttpPost]
-        //[Route("{id}/{newEmail}/UpdateUserEmail")]
-        //public async Task<ActionResult<UsersModel>> UpdateUserEmail(int id, string newEmail)
+        //[Route("{id}/{newPassword}/UpdatePasswordUser")]
+        //public async Task<ActionResult<UsersModel>> UpdatePasswordUser(int id, string password)
         //{
         //    var update = _context.Users.Where(u => u.Id == id).FirstOrDefault();
 

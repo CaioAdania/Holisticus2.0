@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace Holisticus2._0.Application.Services
 {
@@ -39,23 +40,75 @@ namespace Holisticus2._0.Application.Services
                 return result.Fail("Senha incorreta.", "400");
             }
 
+            loginUser.Password = null; 
             return result.Ok(loginUser);
         }
 
-        public async Task<ActionResult<UsersModel>> AddUserAsync(UsersModel user)
+        public async Task<OperationResult<UsersModel>> AddUserAsync(UsersModel user)
+        {
+            var result = new OperationResult<UsersModel>();
+
+            if (!ValidPassword(user.Password))
+            {
+                return result.Fail("A senha deve conter: mínimo 8 caracteres, 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial (@$!%*?&)", "400");
+            }
+
+            if (await _context.Users.AnyAsync(u => u.Email == user.Email))
+            {
+                return result.Fail("Usuário ou email já cadastrado", "400");
+            }
+            try
+            {
+                var password = user.Password;
+                var ecryptPassword = BCrypt.Net.BCrypt.HashPassword(password);
+                user.Password = ecryptPassword;
+
+                _context.Users.Add(user);
+                _context.SaveChangesAsync();
+
+                user.Password = null;
+                return result.Ok(user);
+            }
+            catch
+            {
+                return result.Fail("Erro ao cadastrar o usuário.", "404");
+            }
+        }
+
+        public async Task<OperationResult<UsersModel>> DeleteUserAync(int id)
+        {
+            var result = new OperationResult<UsersModel>();
+
+            try
+            {    
+                var delete = _context.Users.Where(u => u.Id == id).FirstOrDefault();
+
+                if (delete == null)
+                {
+                    return result.Fail("Não foi localizado o usuario.", "400");
+                }
+
+                _context.Remove(delete);
+                _context.SaveChanges();
+
+                return result.Ok(delete);
+            }
+            catch
+            {
+                return result.Fail("Erro ao deletar o usuário.", "400");
+            }
+        }
+
+        public async Task<ActionResult<UsersModel>> EditUserPasswordAsync(int id, string password)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ActionResult<UsersModel>> DeleteUserAync(int id)
+        private bool ValidPassword(string password)
         {
-            throw new NotImplementedException();
-        }
+            string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$";
 
-        public async Task<ActionResult<UsersModel>> EditUserEmailAsync(int id, string userEmail)
-        {
-            throw new NotImplementedException();
+            return Regex.IsMatch(password, pattern);
         }
-
     }
 }
