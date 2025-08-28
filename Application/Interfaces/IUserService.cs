@@ -11,6 +11,6 @@ namespace Holisticus2._0.Application.Interfaces
         Task<OperationResult<UsersModel>> LoginUserAsync(string email, string password);
         Task<OperationResult<UsersModel>> AddUserAsync(UsersModel user);
         Task<OperationResult<UsersModel>> DeleteUserAync(int id);
-        Task<ActionResult<UsersModel>> EditUserPasswordAsync(int id, string password);
+        Task<OperationResult<UsersModel>> EditUserPasswordAsync(int id, string password);
     }
 }

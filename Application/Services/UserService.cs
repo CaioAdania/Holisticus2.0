@@ -30,7 +30,7 @@ namespace Holisticus2._0.Application.Services
 
             if (loginUser == null)
             {
-                return result.Fail("Login não encontrado.", "400");
+                return result.Fail("Não foi localizado o usuário.", "400");
             }
 
             bool passwordLogin = BCrypt.Net.BCrypt.Verify(password, loginUser.Password);
@@ -85,11 +85,11 @@ namespace Holisticus2._0.Application.Services
 
                 if (delete == null)
                 {
-                    return result.Fail("Não foi localizado o usuario.", "400");
+                    return result.Fail("Não foi localizado o usuário.", "400");
                 }
 
                 _context.Remove(delete);
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
 
                 return result.Ok(delete);
             }
@@ -99,9 +99,33 @@ namespace Holisticus2._0.Application.Services
             }
         }
 
-        public async Task<ActionResult<UsersModel>> EditUserPasswordAsync(int id, string password)
+        public async Task<OperationResult<UsersModel>> EditUserPasswordAsync(int id, string password)
         {
-            throw new NotImplementedException();
+            var result = new OperationResult<UsersModel>();
+            try
+            {
+                var update = _context.Users.Where(u => u.Id == id).FirstOrDefault();
+
+                if (update == null)
+                {
+                    return result.Fail("Não foi localizado o usuário.","404");
+                }
+
+                var newPassword = password;
+                var ecryptPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
+                update.Password = ecryptPassword;
+
+                _context.Users.Update(update);
+                _context.SaveChangesAsync();
+
+                update.Password = null;
+                return result.Ok(update);
+
+            }
+            catch
+            {
+                return result.Fail("Erro ao deletar o usuário.", "400");
+            }
         }
 
         private bool ValidPassword(string password)
