@@ -31,22 +31,42 @@ namespace Holisticus2._0.Controllers
             return Ok(medications);
         }
 
-        //[HttpPost]
-        //[Route("AddMedicament")]
-        //public async Task<ActionResult<MedicamentModel>> AddMedicament(MedicamentModel medicament)
-        //{
-        //    _context.Medicament.Add(medicament);
-        //    _context.SaveChangesAsync();
 
-        //    return Ok(medicament);
-        //}
+        /// <summary>
+        /// Adiciona medicamentos.
+        /// </summary>
+        /// <returns>Retorna o medicamento adicionado.</returns>
+        [HttpPost]
+        [Route("AddMedicament")]
+        public async Task<ActionResult<MedicamentModel>> AddMedicament(MedicamentModel medicament)
+        {
+            try
+            {
+                var addMedicament = await _medicamentService.AddMedicamentAsync(medicament);
+
+                if (addMedicament.Success == true)
+                {
+                    return Ok(addMedicament.Data);
+                }
+
+                return BadRequest(new
+                {
+                    Message = addMedicament.ErrorMessage,
+                    ErrorType = addMedicament.ErrorType
+                });
+            }
+            catch
+            {
+                return BadRequest("Erro no serviço.");
+            }
+        }
 
         //[HttpDelete]
         //[Route("DeleteMedicamet")]
         //public async Task<ActionResult<MedicamentModel>> DeleteMedicament(int id)
         //{
         //    var delete = _context.Medicament.Where(m => m.Id == id).FirstOrDefault();
-            
+
         //    if(delete != null)
         //    {
         //        if(delete.StateCode == 1 && delete.IsDeleted == 0)
