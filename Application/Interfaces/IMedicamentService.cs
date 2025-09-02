@@ -10,6 +10,6 @@ namespace Holisticus2._0.Application.Interfaces
         Task<ActionResult<List<MedicamentModel>>> GetAllMedicamentAsync();
         Task<OperationResult<MedicamentModel>> AddMedicamentAsync(MedicamentModel medicament);
         Task<OperationResult<MedicamentModel>> DeleteMedicamentAsync(int id);
-        Task<OperationResult<MedicamentModel>> EditMedicamentAsync(int id, string name);
+        Task<OperationResult<MedicamentModel>> EditMedicamentAmountAsync(int id, int amount);
     }
 }

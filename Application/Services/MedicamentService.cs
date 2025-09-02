@@ -48,15 +48,58 @@ namespace Holisticus2._0.Application.Services
 
         public async Task<OperationResult<MedicamentModel>> DeleteMedicamentAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = new OperationResult<MedicamentModel>();
+            try
+            {
+                var delete = _context.Medicament.Where(m => m.Id == id).FirstOrDefault();
+
+                if (delete == null)
+                {
+                    return result.Fail("Medicamento não localizado.", "404");
+                }
+                if (delete.Amount == 0)
+                {
+                    delete.StateCode = 0;
+                    delete.IsDeleted = 1;
+                    delete.DeletedBy = "admin";
+
+                    _context.SaveChanges();
+                    return result.Ok(delete);
+                }
+
+                return result.Fail("Não é possivel deletar um médicamento em estoque", "400");
+            }
+            catch
+            {
+                return result.Fail("Erro ao deletar medicamento","400");
+            }
         }
 
-        public async Task<OperationResult<MedicamentModel>> EditMedicamentAsync(int id, string name)
+        public async Task<OperationResult<MedicamentModel>> EditMedicamentAmountAsync(int id, int amount)
         {
-            throw new NotImplementedException();
+            var result = new OperationResult<MedicamentModel>();
+            try
+            {
+                var updateAmount = _context.Medicament.Where(m => m.Id == id).FirstOrDefault();
+
+                if (updateAmount == null)
+                {
+                    return result.Fail("Medicamento não localizado.", "404");
+                }
+                if (updateAmount.Amount == 0)
+                {
+                    return result.Fail("Não existe estoque para esse medicamento.", "400");
+                }
+
+                updateAmount.Amount -= amount;
+
+                _context.SaveChanges();
+                return result.Ok(updateAmount);
+            }
+            catch
+            {
+                return result.Fail("Erro ao editar a quantidade.","400");
+            }
         }
-
-
-
     }
 }

@@ -61,54 +61,54 @@ namespace Holisticus2._0.Controllers
             }
         }
 
-        //[HttpDelete]
-        //[Route("DeleteMedicamet")]
-        //public async Task<ActionResult<MedicamentModel>> DeleteMedicament(int id)
-        //{
-        //    var delete = _context.Medicament.Where(m => m.Id == id).FirstOrDefault();
+        [HttpDelete]
+        [Route("{id}/DeleteMedicamet")]
+        public async Task<ActionResult<MedicamentModel>> DeleteMedicament(int id)
+        {
+            try
+            {
+                var idDeleted = await _medicamentService.DeleteMedicamentAsync(id);
 
-        //    if(delete != null)
-        //    {
-        //        if(delete.StateCode == 1 && delete.IsDeleted == 0)
-        //        {
-        //            delete.StateCode = 0;
-        //            delete.IsDeleted = 1;
-        //            delete.DeletedBy = "Admin";
+                if(idDeleted.Success == true)
+                {
+                    return Ok(idDeleted.Data);
+                }
 
-        //            _context.SaveChangesAsync();
-        //        }
-        //        else
-        //        {
-        //            _context.Medicament.Remove(delete);
-        //            _context.SaveChangesAsync();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return BadRequest("Medicamento não encontrado.");
-        //    }
+                return BadRequest(new
+                {
+                    Message = idDeleted.ErrorMessage,
+                    ErrorType = idDeleted.ErrorType
+                });
+            }
+            catch
+            {
+                return BadRequest("Erro no serviço.");
+            }
+        }
 
+        [HttpPost]
+        [Route("{id}/{amount}/UpdateAmoutMedicamet")]
+        public async Task<ActionResult<MedicamentModel>> UpdateAmoutMedicament(int id, int amount)
+        {
+            try
+            {
+                var updateAmout = await _medicamentService.EditMedicamentAmountAsync(id, amount);
 
-        //    return Ok(delete);
-        //}
+                if(updateAmout.Success == true)
+                {
+                    return Ok(updateAmout.Data);
+                }
 
-        //[HttpPost]
-        //[Route("UpdateNameMedicamet")]
-        //public async Task<ActionResult<MedicamentModel>> UpdateMedicament(int id, string name)
-        //{
-        //    var update = _context.Medicament.Where(m => m.Id == id).FirstOrDefault();
-
-        //    if (update != null)
-        //    {
-        //        update.Name = name;
-        //        _context.SaveChangesAsync();
-        //    }
-        //    else
-        //    {
-        //        return BadRequest("Não foi possivel atualizar o nome.");
-        //    }
-
-        //    return Ok(update);
-        //}
+                return BadRequest(new
+                {
+                    Message = updateAmout.ErrorMessage,
+                    ErrorType = updateAmout.ErrorType
+                });
+            }
+            catch
+            {
+                return BadRequest("Erro no serviço.");
+            }
+        }
     }
 }
